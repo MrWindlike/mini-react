@@ -2,8 +2,8 @@
 This project is the mini version of React.
 
 It implements these feature of React:
-- [ ] The `createElement` Function
-- [ ] The `render` Function
+- [x] The `createElement` Function
+- [x] The `render` Function
 - [ ] Concurrent Mode
 - [ ] Fibers
 - [ ] Render and Commit Phases
