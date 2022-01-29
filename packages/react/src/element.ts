@@ -1,12 +1,11 @@
-import { ReactElement } from '@local/shared/types/element'
+import { ReactElement, ReactTextElement } from '@local/shared/types/element'
 import { TEXT_ELEMENT_TYPE } from '@local/shared/src/const/element'
 
-export function createTextElement (text: string): ReactElement {
+export function createTextElement (text: string): ReactTextElement {
   return {
     type: TEXT_ELEMENT_TYPE,
     props: {
-      nodeValue: text,
-      children: []
+      nodeValue: text
     }
   }
 }

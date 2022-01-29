@@ -2,10 +2,11 @@
   "name": "@local/react",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "lib/index.js",
+  "module": "lib/index.js",
   "scripts": {
     "test": "jest",
-    "build": "tsc",
+    "build": "tsc --declaration",
     "dev": "tsc --watch",
     "lint": "eslint --fix",
     "precommit": "lint-staged"
@@ -17,6 +18,7 @@
     "@local/shared": "^1.0.0"
   },
   "devDependencies": {
+    "@babel/preset-env": "^7.16.11",
     "@types/jest": "^27.4.0",
     "babel-jest": "^27.4.6",
     "jest": "^27.4.7",

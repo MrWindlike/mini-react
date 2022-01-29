@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "build": "tsc",
+    "build": "tsc --declaration",
     "dev": "tsc --watch",
     "precommit": "lint-staged"
   },
@@ -12,6 +12,7 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "@babel/preset-env": "^7.16.11",
     "@types/jest": "^27.4.0",
     "babel-jest": "^27.4.6",
     "jest": "^27.4.7",
