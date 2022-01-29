@@ -1,5 +1,6 @@
 import { createElement } from '../src/element'
 import { TEXT_ELEMENT_TYPE } from '@local/shared/src/const/element'
+import { isObjectChildren } from '@local/shared/src/utils/element'
 
 describe('Create React Element', () => {
   test('Create basic React element', () => {
@@ -14,13 +15,14 @@ describe('Create React Element', () => {
       },
       'Hello World'
     )
+    const { href, children } = element.props
 
     expect(element.type).toBe('a')
-    expect(element.props.href).toBe('http://www.google.com')
-    expect(element.props.children instanceof Array).toBe(false)
-    if (!(element.props.children instanceof Array)) {
-      expect(element.props.children.type).toBe(TEXT_ELEMENT_TYPE)
-      expect(element.props.children.props.nodeValue).toBe('Hello World')
+    expect(href).toBe('http://www.google.com')
+    expect(isObjectChildren(children)).toBe(true)
+    if (isObjectChildren(children)) {
+      expect(children.type).toBe(TEXT_ELEMENT_TYPE)
+      expect(children.props.nodeValue).toBe('Hello World')
     }
   })
 
