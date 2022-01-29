@@ -2,16 +2,22 @@
   "name": "@local/react-dom",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "module": "lib/index.js",
   "scripts": {
-    "build": "tsc",
+    "test": "jest",
+    "build": "tsc --declaration",
     "dev": "tsc --watch",
     "precommit": "lint-staged"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
+  "dependencies": {
+    "@local/react": "^1.0.0",
+    "@local/shared": "^1.0.0"
+  },
   "devDependencies": {
+    "@babel/preset-env": "^7.16.11",
     "@types/jest": "^27.4.0",
     "babel-jest": "^27.4.6",
     "jest": "^27.4.7",
@@ -27,6 +33,9 @@
     ],
     "**/*.{ts,d.ts,tsx}": [
       "tsc-files --noEmit"
+    ],
+    "**/*.test.{ts,d.ts,tsx}": [
+      "jest"
     ]
   }
 }
