@@ -15,12 +15,13 @@ describe('Render ReactElement', () => {
     const element = createElement(
       'div',
       {},
-      createElement('a', { href: 'https://www.google.com' }, 'Hello World')
+      createElement('a', { href: 'https://www.google.com' }, 'Hello World'),
+      createElement('span', {}, 'Goodbye')
     )
     const container = document.createElement('div')
 
     render(element, container)
 
-    expect(container.innerHTML).toBe('<div><a href="https://www.google.com">Hello World</a></div>')
+    expect(container.innerHTML).toBe('<div><a href="https://www.google.com">Hello World</a><span>Goodbye</span></div>')
   })
 })

@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
+  "types": "types",
   "scripts": {
     "build": "tsc --declaration",
     "dev": "tsc --watch",
