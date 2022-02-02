@@ -1,9 +1,14 @@
-import { ReactElement, ReactTextElement } from '@local/shared/types/element'
+import {
+  isTextElement
+} from '@local/shared/src/utils/element'
+import {
+  isUnDef
+} from '@local/shared/src/utils/utils'
+import { ReactElement } from '@local/shared/types/element'
 import { Fiber } from '@local/shared/types/fiber'
-import { isTextElement } from '@local/shared/src/utils/element'
-import { isUnDef } from '@local/shared/src/utils/utils'
 
 let nextUnitOfWork: Fiber | null
+let WIPRoot: Fiber | null
 
 function createDOM (element: ReactElement) {
   let node: HTMLElement | Text
@@ -29,10 +34,6 @@ function performUnitOfWork (fiber: Fiber): Fiber | null {
     fiber.dom = createDOM((fiber as ReactElement))
   }
 
-  if (fiber.parent && fiber.parent.dom && fiber.dom) {
-    fiber.parent.dom.appendChild(fiber.dom)
-  }
-
   // create new fibers
   let { children = [] } = fiber.props || {}
   children = ([] as ReactElement[]).concat(children)
@@ -48,7 +49,7 @@ function performUnitOfWork (fiber: Fiber): Fiber | null {
     if (index === 0) {
       fiber.child = childFiber
     } else {
-      preSibling!.sibling = childFiber
+        preSibling!.sibling = childFiber
     }
 
     preSibling = childFiber
@@ -72,19 +73,25 @@ function performUnitOfWork (fiber: Fiber): Fiber | null {
   return next || null
 }
 
-function workLoop () {
+export function workLoop () {
   while (nextUnitOfWork) {
     nextUnitOfWork = performUnitOfWork(nextUnitOfWork)
   }
 }
 
-export function render (element: ReactElement | ReactTextElement, container: HTMLElement) {
-  nextUnitOfWork = {
+export function initWIPRoot (element: ReactElement, container: HTMLElement): Fiber {
+  WIPRoot = {
     dom: container,
     props: {
       children: [element]
     }
   }
 
-  workLoop()
+  nextUnitOfWork = WIPRoot
+
+  return WIPRoot
+}
+
+export function clearWIPRoot () {
+  WIPRoot = null
 }

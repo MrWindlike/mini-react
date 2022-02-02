@@ -1,5 +1,5 @@
 import { createElement } from '@local/react'
-import { render } from '../src/render'
+import { render } from '../src/index'
 
 describe('Render ReactElement', () => {
   it('Render a element without children', () => {
