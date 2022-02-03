@@ -9,11 +9,11 @@ import {
   ReactTextElement
 } from '@local/shared/types/element'
 
-export function render (element: ReactElement | ReactTextElement, container: HTMLElement) {
+export function render (element: ReactElement | ReactTextElement, container: HTMLElement): void {
   const WIPRoot = initWIPRoot(element, container)
 
-  workLoop()
-  commitRoot(WIPRoot)
+  const { deletions } = workLoop()
+  commitRoot(WIPRoot, deletions)
 
   clearWIPRoot()
 }

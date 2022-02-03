@@ -10,5 +10,5 @@ export interface ReactElement {
 
 export interface ReactTextElement {
   type: typeof TEXT_ELEMENT_TYPE
-  props: { nodeValue: string }
+  props: { nodeValue: string } & { children?: Children }
 }

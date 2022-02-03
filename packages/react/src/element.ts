@@ -13,7 +13,7 @@ export function createTextElement (text: string): ReactTextElement {
 export function createElement<Props> (
   type: string,
   props?: Props,
-  ...children: (ReactElement | string)[]
+  ...children: Array<ReactElement | string>
 ): ReactElement {
   const elements = children.map(child => typeof child === 'object' ? child : createTextElement(child))
 

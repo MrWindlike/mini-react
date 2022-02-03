@@ -5,9 +5,9 @@ It implements these feature of React:
 - [x] The `createElement` Function
 - [x] The `render` Function
 - [x] Concurrent Mode
-- [ ] Fibers
-- [ ] Render and Commit Phases
-- [ ] Reconciliation
+- [x] Fibers
+- [x] Render and Commit Phases
+- [x] Reconciliation
 - [ ] Function Components
 - [ ] Hooks
 
