@@ -1,10 +1,12 @@
 import { isDef } from './../../../shared/src/utils/utils'
 import {
   isTextElement,
-  isSameType
+  isSameType,
+  isEvent
 } from '@local/shared/src/utils/element'
 import {
-  isUnDef
+  isUnDef,
+  isFunction
 } from '@local/shared/src/utils/utils'
 import { ReactElement } from '@local/shared/types/element'
 import { Fiber } from '@local/shared/types/fiber'
@@ -26,7 +28,16 @@ function createDOM (element: ReactElement): HTMLElement | Text {
     node = document.createElement(element.type)
 
     for (const key in props) {
-      node.setAttribute(key, String(props[key]))
+      if (isEvent(key)) {
+        if (isFunction(props[key])) {
+          node.addEventListener(
+            key.slice(2).toLowerCase(),
+            props[key] as EventListener
+          )
+        }
+      } else {
+        node.setAttribute(key, String(props[key]))
+      }
     }
   }
 

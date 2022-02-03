@@ -14,3 +14,7 @@ export function isTextElement (element: ReactElement | ReactTextElement): elemen
 export function isSameType (element1: ReactElement | Fiber, element2: ReactElement | Fiber): boolean {
   return element1?.type === element2?.type
 }
+
+export function isEvent (name: string): boolean {
+  return name.startsWith('on') && name.length > 2
+}
