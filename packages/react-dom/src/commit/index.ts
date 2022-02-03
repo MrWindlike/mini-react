@@ -1,6 +1,8 @@
+import { isEvent } from '@local/shared/src/utils/element'
 import {
   isDef,
-  isUnDef
+  isUnDef,
+  isFunction
 } from '@local/shared/src/utils/utils'
 import { TEXT_ELEMENT_TYPE } from '@local/shared/src/const/element'
 import { EffectTag } from '@local/shared/src/const/fiber'
@@ -28,13 +30,26 @@ function commitWork (fiber?: Fiber): void {
           continue
         }
 
-        dom.setAttribute(key, '')
+        if (isEvent(key)) {
+          dom.removeEventListener(key.slice(2).toLowerCase(), oldProps[key] as EventListener)
+        } else {
+          dom.setAttribute(key, '')
+        }
       }
 
       for (const key in props) {
         if (key === 'children') continue
 
-        dom.setAttribute(key, String(props[key]))
+        if (isEvent(key)) {
+          if (oldProps[key] !== props[key]) {
+            dom.removeEventListener(key.slice(2).toLowerCase(), oldProps[key] as EventListener)
+            if (isFunction(props[key])) {
+              dom.addEventListener(key.slice(2).toLowerCase(), props[key] as EventListener)
+            }
+          }
+        } else {
+          dom.setAttribute(key, String(props[key]))
+        }
       }
     }
   } else if (fiber.effectTag === EffectTag.REPLACE) {
