@@ -11,7 +11,7 @@ export function createTextElement (text: string): ReactTextElement {
 }
 
 export function createElement<Props> (
-  type: string,
+  type: ReactElement['type'],
   props?: Props,
   ...children: Array<ReactElement | string>
 ): ReactElement {

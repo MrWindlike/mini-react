@@ -1,4 +1,6 @@
-import { isEvent } from '@local/shared/src/utils/element'
+import {
+  isEvent
+} from '@local/shared/src/utils/element'
 import {
   isDef,
   isUnDef,
@@ -8,12 +10,18 @@ import { TEXT_ELEMENT_TYPE } from '@local/shared/src/const/element'
 import { EffectTag } from '@local/shared/src/const/fiber'
 import { Fiber } from '@local/shared/types/fiber'
 
-function commitWork (fiber?: Fiber): void {
-  if (isUnDef(fiber) || isUnDef(fiber.parent) || isUnDef(fiber.dom)) {
+function commitDOM (fiber: Fiber): void {
+  if (isUnDef(fiber.dom)) {
     return
   }
 
-  const parentDOM = fiber.parent.dom
+  let parent = fiber.parent as Fiber
+
+  while (isUnDef(parent.dom)) {
+    parent = parent.parent as Fiber
+  }
+
+  const parentDOM = parent.dom
 
   if (fiber.effectTag === EffectTag.CREATION) {
     parentDOM?.appendChild(fiber.dom)
@@ -53,7 +61,13 @@ function commitWork (fiber?: Fiber): void {
       }
     }
   } else if (fiber.effectTag === EffectTag.REPLACE) {
-    const oldDOM = fiber.alternate?.dom
+    let alternateHostFiber = fiber.alternate
+
+    while (isDef(alternateHostFiber) && isUnDef(alternateHostFiber.dom)) {
+      alternateHostFiber = alternateHostFiber.child
+    }
+
+    const oldDOM = alternateHostFiber?.dom
 
     if (isDef(oldDOM)) {
       parentDOM?.replaceChild(fiber.dom, oldDOM)
@@ -62,7 +76,41 @@ function commitWork (fiber?: Fiber): void {
     parentDOM?.removeChild(fiber.dom)
   }
 
-  commitWork(fiber.child)
+  fiber.effectTag = null
+}
+
+function commitComponent (fiber: Fiber): void {
+  if (isUnDef(fiber.component)) {
+    return
+  }
+
+  const { component } = fiber
+
+  if (fiber.effectTag === EffectTag.CREATION) {
+    component?.componentDidMount?.()
+    fiber.isMounted = true
+  } else if (fiber.effectTag === EffectTag.UPDATE) {
+    component?.componentDidUpdate?.()
+  } else if (fiber.effectTag === EffectTag.DELETION || fiber.effectTag === EffectTag.REPLACE) {
+    component?.componentWillUnmount?.()
+  }
+
+  fiber.effectTag = null
+}
+
+export function commitWork (fiber?: Fiber): void {
+  if (isUnDef(fiber) || isUnDef(fiber.parent)) {
+    return
+  }
+
+  const shouldUpdate = true
+
+  if (shouldUpdate) {
+    commitDOM(fiber)
+    commitComponent(fiber)
+    commitWork(fiber.child)
+  }
+
   commitWork(fiber.sibling)
 }
 

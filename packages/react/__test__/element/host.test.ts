@@ -1,10 +1,10 @@
-import { createElement } from '../src/element'
+import { createElement } from '../../src/element'
 import { TEXT_ELEMENT_TYPE } from '@local/shared/src/const/element'
 import { isObjectChildren } from '@local/shared/src/utils/element'
 
 describe('Create React Element', () => {
   test('Create basic React element', () => {
-    type Props = {
+    interface Props {
       href: string
     }
 

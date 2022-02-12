@@ -1,7 +1,6 @@
 import { ReactElement } from '@local/shared/types/element'
 import { createElement } from '@local/react'
-import { render } from '../src/index'
-import { reset } from '../src/render'
+import { render, reset } from '../../src'
 
 describe('Render ReactElement', () => {
   beforeEach(() => {
