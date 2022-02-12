@@ -1,10 +1,12 @@
-import { isDef } from './../../../shared/src/utils/utils'
 import {
   isTextElement,
   isSameType,
-  isEvent
+  isEvent,
+  isComponent,
+  isClassComponent
 } from '@local/shared/src/utils/element'
 import {
+  isDef,
   isUnDef,
   isFunction
 } from '@local/shared/src/utils/utils'
@@ -25,7 +27,7 @@ function createDOM (element: ReactElement): HTMLElement | Text {
   } else {
     const { children, ...props } = element.props
 
-    node = document.createElement(element.type)
+    node = document.createElement(element.type) as HTMLElement
 
     for (const key in props) {
       if (isEvent(key)) {
@@ -44,9 +46,8 @@ function createDOM (element: ReactElement): HTMLElement | Text {
   return node
 }
 
-function reconciliationChildren (fiber: Fiber): void {
+function reconciliationChildren (fiber: Fiber, children: ReactElement | ReactElement[]): void {
   let oldFiber = fiber.effectTag === EffectTag.REPLACE ? null : fiber.alternate?.child
-  let { children = [] } = fiber.props ?? {}
   children = ([] as ReactElement[]).concat(children)
   let preSibling: Fiber | null = null
 
@@ -77,6 +78,11 @@ function reconciliationChildren (fiber: Fiber): void {
           alternate: oldFiber ?? null,
           effectTag: EffectTag.REPLACE
         }
+
+        if (isClassComponent(oldFiber)) {
+          oldFiber.effectTag = EffectTag.DELETION
+          deletions.push(oldFiber)
+        }
       } else {
         oldFiber.effectTag = EffectTag.DELETION
         deletions.push(oldFiber)
@@ -84,6 +90,18 @@ function reconciliationChildren (fiber: Fiber): void {
     }
 
     if (isDef(newFiber)) {
+      if (isComponent(newFiber)) {
+        newFiber.isMounted = false
+      }
+
+      if (isClassComponent(newFiber)) {
+        const { type: Component, props } = newFiber
+        const component = new Component(props)
+
+        component.fiber = newFiber
+        newFiber.component = component
+      }
+
       if (index === 0) {
         fiber.child = newFiber
       } else if (isDef(preSibling)) {
@@ -97,14 +115,24 @@ function reconciliationChildren (fiber: Fiber): void {
   }
 }
 
-function performUnitOfWork (fiber: Fiber): Fiber | null {
+export function performUnitOfWork (fiber: Fiber): Fiber | null {
+  const isComponentElement = isComponent(fiber)
+  const isHost = typeof fiber.type !== 'function'
+  let children = fiber.props?.children ?? []
+
   // add dom
-  if (isUnDef(fiber.dom)) {
+  if (isUnDef(fiber.dom) && isHost) {
     fiber.dom = createDOM((fiber as ReactElement))
   }
 
   // create new fibers
-  reconciliationChildren(fiber)
+  if (isComponentElement) {
+    const element = isDef(fiber.component) ? fiber.component.render() : fiber.type(fiber.props)
+
+    children = [].concat(element)
+  }
+
+  reconciliationChildren(fiber, children)
 
   // return next unit of work
   if (isDef(fiber.child)) {
@@ -160,4 +188,8 @@ export function reset (): void {
   currentRoot = null
   WIPRoot = null
   deletions = []
+}
+
+export function setNextUnitOfWork (fiber: Fiber): void {
+  nextUnitOfWork = fiber
 }
