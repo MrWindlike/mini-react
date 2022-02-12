@@ -1,10 +1,10 @@
 {
-  "name": "@local/react-dom",
+  "name": "@local/reconciliation",
   "version": "1.0.0",
   "description": "",
+  "main": "lib/index.js",
   "module": "lib/index.js",
   "scripts": {
-    "test": "jest",
     "build": "tsc --declaration",
     "dev": "tsc --watch",
     "precommit": "lint-staged"
@@ -14,7 +14,6 @@
   "license": "ISC",
   "dependencies": {
     "@local/react": "^1.0.0",
-    "@local/reconciliation": "^1.0.0",
     "@local/shared": "^1.0.0"
   },
   "devDependencies": {

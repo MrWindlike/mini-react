@@ -1,6 +1,7 @@
 import { ReactElement } from '@local/shared/types/element'
 import { Component, createElement, FC } from '@local/react'
-import { render, reset } from '../../src/index'
+import { reset } from '@local/reconciliation'
+import { render } from '../../src/index'
 
 describe('Render class component', () => {
   let element: ReactElement

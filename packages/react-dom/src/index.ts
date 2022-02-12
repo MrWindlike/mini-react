@@ -5,7 +5,7 @@ import {
   clearWIPRoot,
   workLoop,
   setNextUnitOfWork
-} from './render/index'
+} from '@local/reconciliation'
 import { commitRoot, commitWork } from './commit/index'
 import {
   ReactElement,
@@ -53,5 +53,4 @@ export function render (element: ReactElement | ReactTextElement, container: HTM
   clearWIPRoot()
 }
 
-export * from './render'
 export * from './commit'
