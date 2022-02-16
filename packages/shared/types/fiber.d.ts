@@ -1,4 +1,4 @@
-import { ClassComponent } from './component'
+import { ClassComponent, Hook } from './component'
 import { ReactElement, ReactTextElement } from './element'
 import { EffectTag } from '../src/const/fiber'
 
@@ -11,4 +11,5 @@ export type Fiber = Partial<ReactElement | ReactTextElement> & {
   sibling?: Fiber
   alternate?: Fiber | null
   effectTag?: EffectTag | null
+  hooks?: Array<Hook<any>>
 }

@@ -8,8 +8,8 @@ It implements these feature of React:
 - [x] Fibers
 - [x] Render and Commit Phases
 - [x] Reconciliation
-- [ ] Function Components
-- [ ] Hooks
+- [x] Function Components
+- [x] Hooks
 
 ## References
 [Build your own React](https://pomb.us/build-your-own-react/)

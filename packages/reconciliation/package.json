@@ -1,22 +1,19 @@
 {
-  "name": "@local/react",
+  "name": "@local/reconciliation",
   "version": "1.0.0",
   "description": "",
   "main": "lib/index.js",
   "module": "lib/index.js",
   "scripts": {
-    "test": "jest",
     "build": "tsc --declaration",
     "dev": "tsc --watch",
-    "lint": "eslint --fix",
     "precommit": "lint-staged"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@local/shared": "^1.0.0",
-    "@local/reconciliation": "^1.0.0"
+    "@local/shared": "^1.0.0"
   },
   "devDependencies": {
     "@babel/preset-env": "^7.16.11",
@@ -36,7 +33,7 @@
     "**/*.{ts,d.ts,tsx}": [
       "tsc-files --noEmit"
     ],
-    "**/*.test.{js,jsx,ts,tsx,d.ts}": [
+    "**/*.test.{ts,d.ts,tsx}": [
       "jest"
     ]
   }

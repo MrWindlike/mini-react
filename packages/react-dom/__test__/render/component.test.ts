@@ -1,6 +1,7 @@
 import { ReactElement } from '@local/shared/types/element'
-import { Component, createElement, FC } from '@local/react'
-import { render, reset } from '../../src/index'
+import { Component, createElement, useState, FC } from '@local/react'
+import { reset } from '@local/reconciliation'
+import { render } from '../../src/index'
 
 describe('Render class component', () => {
   let element: ReactElement
@@ -113,18 +114,24 @@ describe('Render function component', () => {
   }
 
   const FunctionComponent: FC<Props> = (props) => {
+    const [counter, setCounter] = useState<number>(0)
+
+    const onClick = (): void => {
+      setCounter(Number(counter) + 1)
+    }
+
     return (
       createElement(
         'div',
         {},
-        createElement('a', { href: 'https://www.github.com' }, 'Hello World!'),
+        createElement('a', { href: 'https://www.github.com', onClick }, 'Hello World!'),
         ...(([] as ReactElement[]).concat(props.children ?? [])),
-        createElement('span', {}, 'Counter: 0')
+        createElement('span', {}, `Counter: ${String(counter)}`)
       )
     )
   }
 
-  test('Basic', () => {
+  beforeEach(() => {
     element = createElement(
       FunctionComponent,
       { text: 'Hello World!' },
@@ -136,5 +143,14 @@ describe('Render function component', () => {
     render(element, container)
 
     expect(container.innerHTML).toBe('<div><a href="https://www.github.com">Hello World!</a><p>Goodbye!</p><span>Counter: 0</span></div>')
+  })
+
+  test('Events', () => {
+    const a = container.querySelector('a')
+
+    a?.click()
+    expect(container.innerHTML).toBe('<div><a href="https://www.github.com">Hello World!</a><p>Goodbye!</p><span>Counter: 1</span></div>')
+    a?.click()
+    expect(container.innerHTML).toBe('<div><a href="https://www.github.com">Hello World!</a><p>Goodbye!</p><span>Counter: 2</span></div>')
   })
 })

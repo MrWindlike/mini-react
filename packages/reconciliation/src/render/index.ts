@@ -10,7 +10,10 @@ import {
   isUnDef,
   isFunction
 } from '@local/shared/src/utils/utils'
+import event from '@local/shared/src/utils/event'
+import { SET_STATE } from '@local/shared/src/const/event'
 import { ReactElement } from '@local/shared/types/element'
+import { Hook } from '@local/shared/types/component'
 import { Fiber } from '@local/shared/types/fiber'
 import { EffectTag } from '@local/shared/src/const/fiber'
 
@@ -18,6 +21,7 @@ let nextUnitOfWork: Fiber | null
 let WIPRoot: Fiber | null
 let currentRoot: Fiber | null
 let deletions: Fiber[] = []
+let hookIndex = 0
 
 function createDOM (element: ReactElement): HTMLElement | Text {
   let node: HTMLElement | Text
@@ -127,9 +131,16 @@ export function performUnitOfWork (fiber: Fiber): Fiber | null {
 
   // create new fibers
   if (isComponentElement) {
-    const element = isDef(fiber.component) ? fiber.component.render() : fiber.type(fiber.props)
+    let element: ReactElement
 
-    children = [].concat(element)
+    if (isDef(fiber.component)) {
+      element = fiber.component.render()
+    } else {
+      hookIndex = 0
+      element = fiber.type(fiber.props)
+    }
+
+    children = ([] as ReactElement[]).concat(element)
   }
 
   reconciliationChildren(fiber, children)
@@ -192,4 +203,35 @@ export function reset (): void {
 
 export function setNextUnitOfWork (fiber: Fiber): void {
   nextUnitOfWork = fiber
+}
+
+export function useState<T> (initialValue: T): Hook<T> {
+  const fiber = nextUnitOfWork
+  const oldHook = fiber?.hooks?.[hookIndex]
+
+  if (isDef(oldHook)) {
+    return oldHook
+  }
+
+  const hook: Hook<T> = [
+    initialValue,
+    (newValue: T) => {
+      hook[0] = newValue
+
+      event.emit(SET_STATE, {
+        ...(fiber ?? {}),
+        alternate: fiber
+      })
+    }
+  ]
+
+  if (isDef(fiber)) {
+    if (isUnDef(fiber.hooks)) {
+      fiber.hooks = []
+    }
+
+    fiber.hooks.push(hook)
+  }
+
+  return hook
 }
