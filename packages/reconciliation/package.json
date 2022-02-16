@@ -13,7 +13,6 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@local/react": "^1.0.0",
     "@local/shared": "^1.0.0"
   },
   "devDependencies": {
